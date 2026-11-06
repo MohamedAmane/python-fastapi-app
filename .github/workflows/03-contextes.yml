@@ -1,0 +1,19 @@
+name: Contextes GitHub Actions
+on: [push, pull_request]
+env:
+  APP_NAME: fastapi-starter
+jobs:
+  afficher-contextes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Afficher les valeurs de contexte
+        run: |
+          echo "Nom de l'application : ${{ env.APP_NAME }}"
+          echo "Acteur (qui a lancé) : ${{ github.actor }}"
+          echo "Événement : ${{ github.event_name }}"
+          echo "Branche cible/base (PR) : ${{ github.base_ref }}"
+          echo "Branche source (PR) : ${{ github.head_ref }}"
+          echo "SHA du commit : ${{ github.sha }}"
+          echo "OS du runner : ${{ runner.os }}"
+      - name: Dump entier du contexte github (pour Q10)
+        run: echo '${{ toJson(github) }}'
