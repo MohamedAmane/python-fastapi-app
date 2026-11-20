@@ -14,3 +14,10 @@ jobs:
           echo "BUILD_DATE=$(date +%F)" >> $GITHUB_ENV
       - name: Print environment variables
         run: echo "Application $APP_NAME built on $BUILD_DATE"
+  
+  verify-env:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Print APP_NAME
+        run: echo "Le nom de l'app depuis verify-env est : $APP_NAME"
