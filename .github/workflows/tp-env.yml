@@ -27,22 +27,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
       - name: Set environment variables
         run: |
           echo "APP_NAME=my-app" >> $GITHUB_ENV
           echo "BUILD_DATE=$(date +%F)" >> $GITHUB_ENV
-          
       - name: Print environment variables
         run: echo "Application $APP_NAME built on $BUILD_DATE"
-          
       - name: Print deployment inputs
         run: echo "Inputs -> Env: ${{ inputs.environment }}, Version: ${{ inputs.version }}"
-          
       - name: Print debug information
         if: ${{ inputs.debug == true }}
         run: echo "Le mode debug est activé !"
-          
       - name: Compute full version
         id: version
         run: echo "full_version=${{ inputs.version }}-$(date +%F)" >> $GITHUB_OUTPUT
