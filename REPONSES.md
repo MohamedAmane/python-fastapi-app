@@ -14,9 +14,15 @@ Dans un workflow, le shell par défaut est déduit de l'OS du runner, ou défini
 
 ## Partie 4 – Action Docker vs action composite
 
-Pour le temps d'exécution, voir les durées des steps dans la capture du run :
-- **Action composite** (`Run build info action`) : environ 0 s. Les steps s'exécutent directement dans le shell du runner, sans rien préparer.
-- **Action Docker** (`Run docker hello action`) : plusieurs secondes. Avant d'exécuter l'action, le runner doit construire l'image à partir du `Dockerfile`, ce qui inclut le téléchargement de `alpine:3.20` (étape *Build container for action use*). Il doit ensuite démarrer un conteneur.
+Mesures relevées sur le run #1 (commit `79ff67d`) :
+
+| | Step de l'action | Job complet |
+|---|---|---|
+| **Action composite** (`Run build info action`) | **0 s** | – (fait partie de `build`, 9 s, dont 4 s pour `Setup Node.js`) |
+| **Action Docker** (`Run docker hello action`) | **2 s** | **6 s** pour `docker-hello`, alors que le job ne contient qu'un checkout et l'action |
+
+- **Action composite** : les steps s'exécutent directement dans le shell du runner, sans rien préparer.
+- **Action Docker** : au démarrage du job, le runner doit d'abord construire l'image à partir du `Dockerfile`, ce qui inclut le téléchargement de `alpine:3.20` (*Build container for action use*). Ensuite, à chaque appel, il démarre un conteneur. Un simple `echo` prend donc plusieurs secondes, contre un temps quasi nul en composite.
 
 Conclusion : une action Docker fournit un environnement totalement maîtrisé, quels que soient les outils installés sur le runner. En contrepartie, elle est plus lente et ne fonctionne que sur des runners Linux. Une action composite est quasi instantanée et portable, mais elle dépend des outils déjà présents sur le runner.
 
